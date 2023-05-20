@@ -88,7 +88,11 @@ class App extends Component {
         {isLoading && <Loader />}
         {error && <Text>Sorry. {error} 😭</Text>}
         {showModal && (
-          <Modal largePhoto={largePhoto} closeModal={this.closeModal} />
+          <Modal
+            isModalShow={showModal}
+            largePhoto={largePhoto}
+            closeModal={this.closeModal}
+          />
         )}
       </Container>
     );
