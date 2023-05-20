@@ -21,7 +21,7 @@ const Modal = ({ closeModal, largePhoto, isModalShow }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isModalShow]);
+  }, [isModalShow, closeModal]);
 
   const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
