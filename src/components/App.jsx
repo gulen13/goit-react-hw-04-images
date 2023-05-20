@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import * as ImageService from 'service/image-service';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
@@ -8,95 +8,81 @@ import Modal from './ModalWindow/Modal';
 import { Text } from './Text/Text.styled';
 import { Container } from './Container/Container.styled';
 
-class App extends Component {
-  state = {
-    value: '',
-    page: 1,
-    items: [],
-    isLoading: false,
-    isEmpty: false,
-    showBtn: false,
-    error: null,
-    showModal: false,
-    largePhoto: '',
-  };
+const App = () => {
+  const [value, setvalue] = useState('');
+  const [page, setpage] = useState(1);
+  const [items, setitems] = useState([]);
+  const [isLoading, setisLoading] = useState(false);
+  const [isEmpty, setisEmpty] = useState(false);
+  const [showBtn, setshowBtn] = useState(false);
+  const [error, seterror] = useState(null);
+  const [showModal, setshowModal] = useState(false);
+  const [largePhoto, setlargePhoto] = useState('');
 
-  componentDidUpdate(prevProps, prevState) {
-    const { value, page } = this.state;
-    if (prevState.value !== value || prevState.page !== page) {
-      this.setState({ isLoading: true });
-      ImageService.getImages(value, page)
-        .then(({ hits, total }) => {
-          if (!hits.length) {
-            this.setState({ isEmpty: true });
-            return;
-          }
-          this.setState(prevState => ({
-            items: [...prevState.items, ...hits],
-            showBtn: page < Math.ceil(total / 12),
-          }));
-        })
-        .catch(error => {
-          this.setState({ error: error.message });
-        })
-        .finally(() => {
-          this.setState({ isLoading: false });
-        });
-    }
-  }
+  useEffect(() => {
+    if (value === '') return;
+    setisLoading(true);
+    ImageService.getImages(value, page)
+      .then(({ hits, total }) => {
+        setitems(previtems => [...previtems, ...hits]);
+        setshowBtn(page < Math.ceil(total / 12));
+        if (!hits.length) {
+          setisEmpty(true);
+          return;
+        }
+      })
+      .catch(error => {
+        seterror(error.message);
+      })
+      .finally(() => {
+        setisLoading(false);
+      });
+  }, [value, page]);
 
-  handleSubmit = query => {
-    if (query === this.state.value) {
+  const handleSubmit = query => {
+    if (query === value) {
       alert('Please enter new query request');
       return;
     }
-    this.setState({
-      value: query,
-      page: 1,
-      items: [],
-      isLoading: false,
-      isEmpty: false,
-      showBtn: false,
-      error: null,
-    });
+    setvalue(query);
+    setpage(1);
+    setitems([]);
+    setisLoading(false);
+    setisEmpty(false);
+    setshowBtn(false);
+    seterror(null);
   };
 
-  handleButton = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+  const handleButton = () => {
+    setpage(prevpage => prevpage + 1);
   };
 
-  openModal = largePhoto => {
-    this.setState({ showModal: true, largePhoto: largePhoto });
+  const openModal = largePhoto => {
+    setshowModal(true);
+    setlargePhoto(largePhoto);
   };
 
-  closeModal = () => {
-    this.setState({ showModal: false });
+  const closeModal = () => {
+    setshowModal(false);
   };
 
-  render() {
-    const { items, isEmpty, showBtn, error, isLoading, showModal, largePhoto } =
-      this.state;
-
-    return (
-      <Container>
-        <Searchbar handleSubmit={this.handleSubmit} />
-        {isEmpty && (
-          <Text>Sorry. There are no images on your search ... 😭</Text>
-        )}
-        <ImageGallery gallery={items} openModal={this.openModal} />
-        {showBtn && <Button onClick={this.handleButton} />}
-        {isLoading && <Loader />}
-        {error && <Text>Sorry. {error} 😭</Text>}
-        {showModal && (
-          <Modal
-            isModalShow={showModal}
-            largePhoto={largePhoto}
-            closeModal={this.closeModal}
-          />
-        )}
-      </Container>
-    );
-  }
-}
+  return (
+    <Container>
+      <Searchbar handleSubmit={handleSubmit} />
+      {isEmpty && <Text>Sorry. There are no images on your search ... 😭</Text>}
+      <ImageGallery gallery={items} openModal={openModal} />
+      {showBtn && <Button onClick={handleButton} />}
+      {isLoading && <Loader />}
+      {error && <Text>Sorry. {error} 😭</Text>}
+      {showModal && (
+        <Modal
+          isModalShow={showModal}
+          largePhoto={largePhoto}
+          closeModal={closeModal}
+        />
+      )}
+    </Container>
+  );
+};
 
 export default App;
