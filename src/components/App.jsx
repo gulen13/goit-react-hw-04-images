@@ -55,10 +55,6 @@ const App = () => {
     seterror(null);
   };
 
-  const handleButton = () => {
-    setpage(prevpage => prevpage + 1);
-  };
-
   const openModal = largePhoto => {
     setshowModal(true);
     setlargePhoto(largePhoto);
@@ -68,14 +64,20 @@ const App = () => {
     setshowModal(false);
   };
 
-  // function autoScrollPage() {
-  //   // const { height: cardHeight } =
-  //   //   ulRef.current.firstElementChild.getBoundingClientRect();
+  function autoScrollPage() {
+    const { height: cardHeight } =
+      ulRef.current.firstElementChild.getBoundingClientRect();
 
-  //   console.log(ulRef.current.scrollHeight);
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
+  }
 
-  //   window.scrollTo(0, ulRef.current.scrollHeight);
-  // }
+  const handleButton = () => {
+    setpage(prevpage => prevpage + 1);
+    autoScrollPage();
+  };
 
   return (
     <Container>
