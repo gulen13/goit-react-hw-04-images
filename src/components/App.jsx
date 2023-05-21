@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import * as ImageService from 'service/image-service';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
@@ -18,8 +18,6 @@ const App = () => {
   const [error, seterror] = useState(null);
   const [showModal, setshowModal] = useState(false);
   const [largePhoto, setlargePhoto] = useState('');
-
-  const ulRef = useRef();
 
   useEffect(() => {
     if (value === '') return;
@@ -55,6 +53,10 @@ const App = () => {
     seterror(null);
   };
 
+  const handleButton = () => {
+    setpage(prevpage => prevpage + 1);
+  };
+
   const openModal = largePhoto => {
     setshowModal(true);
     setlargePhoto(largePhoto);
@@ -64,26 +66,11 @@ const App = () => {
     setshowModal(false);
   };
 
-  function autoScrollPage() {
-    const { height: cardHeight } =
-      ulRef.current.firstElementChild.getBoundingClientRect();
-
-    window.scrollBy({
-      top: cardHeight * 2,
-      behavior: 'smooth',
-    });
-  }
-
-  const handleButton = () => {
-    setpage(prevpage => prevpage + 1);
-    autoScrollPage();
-  };
-
   return (
     <Container>
       <Searchbar handleSubmit={handleSubmit} />
       {isEmpty && <Text>Sorry. There are no images on your search ... 😭</Text>}
-      <ImageGallery ulRef={ulRef} gallery={items} openModal={openModal} />
+      <ImageGallery page={page} gallery={items} openModal={openModal} />
       {showBtn && <Button onClick={handleButton} />}
       {isLoading && <Loader />}
       {error && <Text>Sorry. {error} 😭</Text>}
