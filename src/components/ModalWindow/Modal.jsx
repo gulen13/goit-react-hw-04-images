@@ -6,22 +6,19 @@ import PropTypes from 'prop-types';
 
 const modalRoot = document.querySelector('#modal-root');
 
-const Modal = ({ closeModal, largePhoto, isModalShow }) => {
+const Modal = ({ closeModal, largePhoto }) => {
   useEffect(() => {
     const handleKeyDown = e => {
       if (e.code === 'Escape') {
         closeModal();
       }
     };
-
-    if (isModalShow) {
-      window.addEventListener('keydown', handleKeyDown);
-    }
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isModalShow, closeModal]);
+  }, [closeModal]);
 
   const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
@@ -44,7 +41,6 @@ const Modal = ({ closeModal, largePhoto, isModalShow }) => {
 Modal.propTypes = {
   closeModal: PropTypes.func.isRequired,
   largePhoto: PropTypes.string.isRequired,
-  isModalShow: PropTypes.bool.isRequired,
 };
 
 export default Modal;

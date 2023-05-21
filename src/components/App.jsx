@@ -24,12 +24,12 @@ const App = () => {
     setisLoading(true);
     ImageService.getImages(value, page)
       .then(({ hits, total }) => {
-        setitems(previtems => [...previtems, ...hits]);
-        setshowBtn(page < Math.ceil(total / 12));
         if (!hits.length) {
           setisEmpty(true);
           return;
         }
+        setitems(previtems => [...previtems, ...hits]);
+        setshowBtn(page < Math.ceil(total / 12));
       })
       .catch(error => {
         seterror(error.message);
@@ -74,13 +74,7 @@ const App = () => {
       {showBtn && <Button onClick={handleButton} />}
       {isLoading && <Loader />}
       {error && <Text>Sorry. {error} 😭</Text>}
-      {showModal && (
-        <Modal
-          isModalShow={showModal}
-          largePhoto={largePhoto}
-          closeModal={closeModal}
-        />
-      )}
+      {showModal && <Modal largePhoto={largePhoto} closeModal={closeModal} />}
     </Container>
   );
 };
