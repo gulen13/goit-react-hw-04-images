@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import { ImageGalleryStd } from './ImageGallery.styled';
 
-const ImageGallery = ({ gallery, openModal }) => {
+const ImageGallery = ({ gallery, openModal, ulRef }) => {
   return (
     <>
-      <ImageGalleryStd>
+      <ImageGalleryStd ref={ulRef}>
         {gallery.map(({ id, tags, webformatURL, largeImageURL }) => {
           return (
             <ImageGalleryItem
