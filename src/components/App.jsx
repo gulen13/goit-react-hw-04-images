@@ -70,7 +70,7 @@ const App = () => {
     <Container>
       <Searchbar handleSubmit={handleSubmit} />
       {isEmpty && <Text>Sorry. There are no images on your search ... 😭</Text>}
-      <ImageGallery gallery={items} openModal={openModal} />
+      <ImageGallery page={page} gallery={items} openModal={openModal} />
       {showBtn && <Button onClick={handleButton} />}
       {isLoading && <Loader />}
       {error && <Text>Sorry. {error} 😭</Text>}
